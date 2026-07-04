@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FINDINGS — bluecopa.com</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #f9f9f7;
+    color: #111;
+    padding: 48px 40px 80px;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  .header { border-bottom: 3px solid #111; padding-bottom: 18px; margin-bottom: 32px; }
+  .header h1 { font-size: 52px; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+  .header .sub { margin-top: 10px; font-size: 12px; font-family: 'Courier New', monospace; color: #666; }
+  .header .sub span { margin: 0 8px; color: #ccc; }
+
+  /* ── STAT ROW ── */
+  .stats { display: flex; margin-bottom: 28px; border: 2px solid #111; }
+  .stat { flex: 1; padding: 14px 18px; border-right: 2px solid #111; }
+  .stat:last-child { border-right: none; }
+  .stat-num { font-size: 28px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+  .stat-label { font-size: 10px; letter-spacing: 1.5px; color: #888; margin-top: 3px; font-family: 'Courier New', monospace; text-transform: uppercase; }
+
+  /* ── GRID ── */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111; border: 2px solid #111; margin-bottom: 2px; }
+  .tile { background: #f9f9f7; padding: 20px 22px; cursor: pointer; transition: background 0.08s, color 0.08s; }
+  .tile:hover { background: #111; color: #fff; }
+  .tile:hover .tile-num, .tile:hover .tile-count { color: rgba(255,255,255,0.4); }
+  .tile.active { background: #111; color: #fff; }
+  .tile.active .tile-num, .tile.active .tile-count { color: rgba(255,255,255,0.4); }
+  .tile-num { font-size: 10px; font-family: 'Courier New', monospace; letter-spacing: 2px; color: #aaa; margin-bottom: 5px; }
+  .tile-name { font-size: 19px; font-weight: 800; letter-spacing: -0.5px; }
+  .tile-count { font-size: 11px; color: #999; margin-top: 4px; font-family: 'Courier New', monospace; }
+
+  /* ── PANEL ── */
+  #panel { display: none; border: 2px solid #111; border-top: none; background: #fff; }
+  #panel.open { display: block; }
+  .panel-header { background: #111; color: #fff; padding: 13px 22px; display: flex; align-items: baseline; gap: 14px; }
+  .panel-title { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; font-family: 'Courier New', monospace; }
+  .panel-sub { font-size: 11px; opacity: 0.45; font-family: 'Courier New', monospace; }
+  .panel-body { padding: 28px 22px; }
+
+  /* ── TABLE LABELS ── */
+  .tbl-label { font-size: 10px; font-family: 'Courier New', monospace; letter-spacing: 2px; color: #999; text-transform: uppercase; margin-bottom: 10px; margin-top: 32px; }
+  .tbl-label:first-child { margin-top: 0; }
+
+  /* ── TABLES ── */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid #e0e0e0; }
+  th { text-align: left; padding: 9px 13px; background: #1a1a1a; color: #fff; font-size: 10px; font-family: 'Courier New', monospace; letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; }
+  td { padding: 11px 13px; border-bottom: 1px solid #ebebeb; vertical-align: top; line-height: 1.55; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(odd) td { background: #fafafa; }
+  tr:nth-child(even) td { background: #fff; }
+
+  /* ── LINKS ── */
+  a.path-link {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #1a1a1a;
+    background: #eee;
+    padding: 2px 7px;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    margin: 2px 2px 2px 0;
+    white-space: nowrap;
+  }
+  a.path-link:hover { background: #111; color: #fff; border-color: #111; }
+  a.src-link {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #555;
+    text-decoration: underline;
+    word-break: break-all;
+  }
+  a.src-link:hover { color: #111; }
+
+  /* ── MISC ── */
+  .fname { font-weight: 600; }
+  .divider { height: 1px; background: #e8e8e8; margin: 32px 0; }
+  .src-text { font-family: 'Courier New', monospace; font-size: 11px; color: #666; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>FINDINGS</h1>
+  <div class="sub">
+    bluecopa.com
+    <span>·</span>
+    July 2026
+    <span>·</span>
+    Observed from publicly accessible sources only — findings reflect what is visible externally and may be incomplete without internal access
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">52</div><div class="stat-label">Total Findings</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label">Areas Reviewed</div></div>
+  <div class="stat"><div class="stat-num">15</div><div class="stat-label">Security Observations</div></div>
+  <div class="stat"><div class="stat-num">18</div><div class="stat-label">Pages Audited</div></div>
+  <div class="stat"><div class="stat-num">3</div><div class="stat-label">Undocumented Subdomains</div></div>
+  <div class="stat"><div class="stat-num">0</div><div class="stat-label">Canonical Tags Found</div></div>
+</div>
+
+<div class="grid" id="grid"></div>
+<div id="panel"></div>
+
+<script>
+const BASE = 'https://www.bluecopa.com';
+
+const cats = [
+  {
+    id: 'security', name: 'Security', num: '01',
+    rows: [
+      {
+        area:'CRM Injection',
+        finding:'HubSpot CRM API endpoint hardcoded in client-side JavaScript',
+        paths:[{l:'/arcade', u:BASE+'/arcade'}],
+        source:{text:'Inline JavaScript source — /arcade page', url:BASE+'/arcade'},
+        fix:'Move to server-side proxy. Add CAPTCHA and rate limiting.',
+        impact:'A direct, unauthenticated API endpoint in client-side code bypasses all form-level validation and rate limiting. Any script can POST submissions directly to the CRM, which may affect pipeline data quality and reporting accuracy without server-side controls in place.'
+      },
+      {
+        area:'Personnel Exposure',
+        finding:'Employee calendar handle hardcoded in 3 page sources',
+        paths:[{l:'/demo',u:BASE+'/demo'},{l:'/reconciliation',u:BASE+'/reconciliation'},{l:'/continuous-close',u:BASE+'/continuous-close'}],
+        source:{text:'Page HTML source — /demo, /reconciliation, /continuous-close', url:BASE+'/demo'},
+        fix:'Load meeting URL server-side. Never hardcode employee identifiers in public HTML.',
+        impact:'Hardcoding an individual employee\'s calendar identifier in public HTML creates unnecessary exposure. The pattern can be used to enumerate or impersonate internal staff, and the employee\'s scheduling availability becomes publicly inferrable from the embed URL.'
+      },
+      {
+        area:'Supply Chain',
+        finding:'Unpinned personal npm package @imshaiksaif/webflow-marquee@latest loads on all pages',
+        paths:[{l:'/',u:BASE+'/'},{l:'/samyxai',u:BASE+'/samyxai'},{l:'/demo',u:BASE+'/demo'}],
+        source:{text:'script src on all pages + HTML comment exposes package name', url:'https://cdn.jsdelivr.net/npm/@imshaiksaif/webflow-marquee@latest/dist/marqueeHandler.js'},
+        fix:'Pin to exact version. Self-host the script file. Remove the HTML comment.',
+        impact:'Loading a community npm package at @latest means any new version published by the package maintainer deploys automatically to all site visitors. A compromised maintainer account would result in immediate, sitewide script execution with no action required from the site owner.'
+      },
+      {
+        area:'Info Disclosure',
+        finding:'/manifest.json publicly accessible — exposes full internal URL and redirect architecture',
+        paths:[{l:'/manifest.json',u:BASE+'/manifest.json'}],
+        source:{text:'Direct fetch — returns HTTP 200, no authentication required', url:BASE+'/manifest.json'},
+        fix:'Block via Cloudflare rule. Audit all exposed redirect paths for removed content.',
+        impact:'An unauthenticated GET to /manifest.json returns a complete map of historical URL structure, 55+ redirect rules including internal typo corrections, domain enforcement rules, and the Webflow site folder ID. This provides a low-effort enumeration path for any external party without requiring active scanning.'
+      },
+      {
+        area:'HTTP Headers',
+        finding:'Three HTTP security headers absent — X-Content-Type-Options, Referrer-Policy, Permissions-Policy',
+        paths:[{l:'bluecopa.com (all pages)',u:BASE+'/'}],
+        source:{text:'Live HTTP response header scan — 2026-07-01 (user-confirmed)', url:null},
+        fix:'Add all three via Cloudflare transform response header rules.',
+        impact:'Each absent header addresses a distinct browser-level protection: X-Content-Type-Options prevents MIME sniffing, Referrer-Policy controls URL leakage to third parties on external link clicks, and Permissions-Policy restricts browser feature access. All three are standard and configurable via Cloudflare response rules without code changes.'
+      },
+      {
+        area:'CSP Scope',
+        finding:'Content Security Policy only covers frame-ancestors — inline JS, object-src, form-action, base-uri all unprotected',
+        paths:[{l:'bluecopa.com (all pages)',u:BASE+'/'}],
+        source:{text:'CSP header analysis — 2026-07-01 (5 checks failed, 2 passed)', url:null},
+        fix:'Expand CSP: add object-src none, base-uri self, form-action self. Work toward restricting unsafe-inline in script-src.',
+        impact:'The current policy only prevents framing. It provides no control over inline script execution, plugin embedding, form submission targets, or base tag overrides. A more complete policy would define script-src, object-src, base-uri, and form-action directives, reducing the attack surface available to any injected or third-party code.'
+      },
+      {
+        area:'Staging Exposure',
+        finding:'Staging domain bluecopapr1.webflow.io is publicly accessible, Google-indexed, and uses a different GTM container from production',
+        paths:[{l:'bluecopapr1.webflow.io',u:'https://bluecopapr1.webflow.io/'}],
+        source:{text:'WebSearch (Google-indexed) + direct fetch HTTP 200 — 2026-07-01', url:'https://bluecopapr1.webflow.io/'},
+        fix:'Disable search indexing in Webflow settings. Password-protect staging. Decommission old GTM-MRWW7Q7.',
+        impact:'An unprotected staging subdomain indexed by search engines may surface pre-release content publicly and dilute production SEO equity. The staging environment uses a separate GTM container (GTM-MRWW7Q7) from production (GTM-NN2DJLLM), meaning staging visitor data routes to an unmonitored analytics bucket.'
+      },
+      {
+        area:'Form Enumeration',
+        finding:'6 HubSpot form GUIDs exposed across public pages (Portal ID 23933800)',
+        paths:[{l:'/arcade',u:BASE+'/arcade'},{l:'/events/gcc-leaders-box-cricket-meet',u:BASE+'/events/gcc-leaders-box-cricket-meet'},{l:'/performance-linked-bonus-automation',u:BASE+'/performance-linked-bonus-automation'},{l:'/ebooks/hfs-hot-vendor-2023-report-1',u:BASE+'/ebooks/hfs-hot-vendor-2023-report-1'},{l:'/ebooks/how-cfos-can-leverage-the-ai-spectrum-from-rpa-to-agentic-systems',u:BASE+'/ebooks/how-cfos-can-leverage-the-ai-spectrum-from-rpa-to-agentic-systems'}],
+        source:{text:'Page HTML source — 6 pages, hbspt.forms.create() and fetch() calls', url:BASE+'/arcade'},
+        fix:'Enable reCAPTCHA on all HubSpot forms via HubSpot portal settings. Move /arcade to a server-side proxy.',
+        impact:'Six distinct HubSpot form identifiers are enumerable from public page sources. Each exposed form GUID can be used to POST arbitrary data directly to the HubSpot Forms API without visiting the site, bypassing browser-side validation. Any HubSpot workflows tied to these forms would trigger on submitted data. The /arcade endpoint additionally uses a direct API fetch pattern, removing even the standard embed flow entirely.'
+      },
+      {
+        area:'Supply Chain — SRI',
+        finding:'No Subresource Integrity (SRI) hash on any third-party script sitewide',
+        paths:[{l:'/',u:BASE+'/'},{l:'/demo',u:BASE+'/demo'},{l:'/samyxai',u:BASE+'/samyxai'}],
+        source:{text:'<script> tag inspection across all pages — 0 integrity attributes found', url:BASE+'/'},
+        fix:'Add integrity and crossorigin attributes to all externally hosted scripts. For dynamically injected scripts, self-host instead.',
+        impact:'Without SRI hashes, browsers cannot verify that a third-party script has not been tampered with between the CDN and the visitor\'s browser. Every external script on the site — GTM, HubSpot embed, the marquee package — loads with full trust and no integrity check. SRI is a one-line addition per script tag and is the standard defence against CDN-level tampering.'
+      },
+      {
+        area:'Client-Side Score Manipulation',
+        finding:'/arcade game scores and crossword completion flag stored in localStorage — submitted to HubSpot without server-side validation',
+        paths:[{l:'/arcade',u:BASE+'/arcade'}],
+        source:{text:'Inline JavaScript on /arcade — localStorage keys bc_lb_starwars, bc_lb_bike, bc_lb_snake, bc_lb_crossword, bc_cw_solved confirmed', url:BASE+'/arcade'},
+        fix:'Validate scores server-side before accepting HubSpot submissions. Consider a signed score token generated at game completion.',
+        impact:'Game scores and the crossword completion flag (bc_cw_solved) are read directly from localStorage before being submitted to HubSpot. Since localStorage is fully accessible and editable in any browser, all five values are manipulable in seconds via developer tools. Any submission to the leaderboard form can be made with arbitrary score data and a fake completion state, which flows into the CRM without a validation step.'
+      },
+      {
+        area:'Data Forwarding',
+        finding:'LinkedIn li_fat_id tracking cookie forwarded to HubSpot on /demo without user disclosure',
+        paths:[{l:'/demo',u:BASE+'/demo'}],
+        source:{text:'Inline JavaScript on /demo — exact forwarding code confirmed', url:BASE+'/demo'},
+        fix:'Remove the forwarding entirely or gate it behind explicit ad tracking consent in a CMP.',
+        impact:'The LinkedIn li_fat_id value is passed to the HubSpot meeting URL via client-side script on /demo. Worth confirming this is covered in the cookie policy documentation. If undocumented, it may surface during a privacy review.'
+      },
+      {
+        area:'Vulnerability Disclosure',
+        finding:'No security.txt at /.well-known/security.txt or /security.txt',
+        paths:[{l:'/.well-known/security.txt',u:BASE+'/.well-known/security.txt'},{l:'/security.txt',u:BASE+'/security.txt'}],
+        source:{text:'Direct fetch of both RFC 9116 standard paths — both return HTTP 404', url:BASE+'/.well-known/security.txt'},
+        fix:'Create /.well-known/security.txt with contact email, preferred language, and expiry date.',
+        impact:'Without a published vulnerability disclosure mechanism, external researchers have no sanctioned channel for responsible reporting. RFC 9116 defines security.txt as the expected path; its absence is a standard gap noted in security programme maturity reviews, particularly for organisations citing SOC 2 or ISO 27001 alignment.'
+      },
+      {
+        area:'Crawl Policy',
+        finding:'robots.txt has empty Disallow — /arcade, /campaigns/, /old-pages/, and /manifest.json are all freely crawlable',
+        paths:[{l:'/robots.txt',u:BASE+'/robots.txt'}],
+        source:{text:'Direct fetch of /robots.txt — Disallow: field is completely blank', url:BASE+'/robots.txt'},
+        fix:'Add Disallow rules: /arcade, /thankyou, /old-pages/, /campaigns/, /manifest.json.',
+        impact:'robots.txt currently permits all bots to crawl the entire site with no restrictions. This means automated scanners, scrapers, and search crawlers have unrestricted access to every path — including /arcade (which contains a live CRM API endpoint), campaign landing pages, the old-pages directory, and the manifest.json file. While robots.txt is advisory rather than a security control, having no Disallow directives removes a basic layer of discouragement for automated access to sensitive paths.'
+      },
+      {
+        area:'Campaign Exposure',
+        finding:'/campaigns/continuous-close-lp and /campaigns/recon-lp are live, unprotected, and carry the same security issues as main pages',
+        paths:[{l:'/campaigns/continuous-close-lp',u:BASE+'/campaigns/continuous-close-lp'},{l:'/campaigns/recon-lp',u:BASE+'/campaigns/recon-lp'}],
+        source:{text:'Paths discovered via /manifest.json redirect rules — both return HTTP 200 with full page content on direct fetch', url:BASE+'/campaigns/continuous-close-lp'},
+        fix:'Add noindex to both pages. Add defer to HubSpot script. Remove hardcoded employee calendar handle. Gate LinkedIn tracking behind consent.',
+        impact:'Both campaign landing pages are publicly accessible and were only discoverable because manifest.json is public. Each page carries the full set of security issues present on the main site: employee calendar handle shekhargtm hardcoded in HTML, LinkedIn li_fat_id cookie forwarding active without consent, HubSpot meetings script loading without defer, and GTM firing on page load. These pages are likely not included in internal security reviews or monitoring, making them a lower-visibility version of the same exposure.'
+      }
+    ]
+  },
+  {
+    id: 'seo', name: 'SEO', num: '02',
+    rows: [
+      {
+        area:'Canonicals',
+        finding:'No canonical tags on any of 18 pages checked',
+        paths:[{l:'/',u:BASE+'/'},{l:'/samyxai',u:BASE+'/samyxai'},{l:'/demo',u:BASE+'/demo'},{l:'/reconciliation',u:BASE+'/reconciliation'},{l:'/solutions/recon-automation',u:BASE+'/solutions/recon-automation'}],
+        source:{text:'<head> inspection — 18 pages, 0 canonical tags found', url:BASE+'/'},
+        fix:'Add self-referencing canonical to every indexable page template in Webflow.',
+        impact:'Without self-referencing canonicals, search engines make independent decisions about which URL to index when near-duplicate pages exist. Two confirmed duplicate pairs (/solutions/recon-automation and /reconciliation; /solutions/continuous-close and /continuous-close) split indexing signals between them, with neither page ranking as strongly as a single authoritative URL would.'
+      },
+      {
+        area:'Meta Descriptions',
+        finding:'No meta descriptions on any of 18 pages checked',
+        paths:[{l:'all 18 pages checked',u:BASE+'/'}],
+        source:{text:'<head> inspection — 18 pages, 0 meta description tags found', url:BASE+'/'},
+        fix:'Add meta description field to all CMS and static page templates.',
+        impact:'Without a meta description, search engines generate their own snippet from body text, which may be truncated, off-topic, or drawn from placeholder content. Controlled descriptions improve SERP presentation and click-through rates, particularly on pages where body content has not yet been finalised.'
+      },
+      {
+        area:'Social Metadata',
+        finding:'No OG description on any of 18 pages checked',
+        paths:[{l:'all pages',u:BASE+'/'}],
+        source:{text:'<head> inspection — 18 pages, 0 og:description tags found', url:BASE+'/'},
+        fix:'Add og:description to every page template.',
+        impact:'Social share previews for all pages display without a description field. Link previews shared via email, messaging platforms, or LinkedIn show only a title, reducing informational value when pages are shared in prospect or customer conversations.'
+      },
+      {
+        area:'Structured Data',
+        finding:'No JSON-LD structured data on any page',
+        paths:[{l:'/',u:BASE+'/'},{l:'/glossary/account-reconciliation',u:BASE+'/glossary/account-reconciliation'},{l:'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises',u:BASE+'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises'}],
+        source:{text:'<head> inspection — all pages checked, 0 application/ld+json scripts found', url:BASE+'/'},
+        fix:'Add Organization + WebSite on homepage. Article on blogs. DefinedTerm on glossary. BreadcrumbList sitewide.',
+        impact:'Structured data enables rich results in Google Search. Without Organization schema on the homepage, Article schema on blog posts, and DefinedTerm schema on the 101 glossary pages, the site does not qualify for the rich result formats its content is eligible for. Competitors with proper schema receive more visually prominent SERP placements.'
+      },
+      {
+        area:'H1 Structure',
+        finding:'Multiple H1 tags — /samyxai (4 H1s), /continuous-close (2), /platform/order-to-cash (2), /platform/procure-to-pay (2)',
+        paths:[{l:'/samyxai',u:BASE+'/samyxai'},{l:'/continuous-close',u:BASE+'/continuous-close'},{l:'/platform/order-to-cash',u:BASE+'/platform/order-to-cash'},{l:'/platform/procure-to-pay',u:BASE+'/platform/procure-to-pay'}],
+        source:{text:'Page HTML heading inspection — confirmed on 4 pages', url:BASE+'/samyxai'},
+        fix:'Enforce exactly one H1 per page. Convert all extra headings to H2 or H3.',
+        impact:'Multiple H1 elements on a single page make it harder for search engines to identify the primary topic of the page. Keyword authority distributes across competing headings rather than concentrating on one. The /samyxai page with four H1 tags is the most affected, as it is the primary AI product page.'
+      },
+      {
+        area:'Missing Title',
+        finding:'No <title> tag on /solutions/recon-automation and /solutions/continuous-close',
+        paths:[{l:'/solutions/recon-automation',u:BASE+'/solutions/recon-automation'},{l:'/solutions/continuous-close',u:BASE+'/solutions/continuous-close'}],
+        source:{text:'Direct page fetch — <title> element completely absent from HTML', url:BASE+'/solutions/recon-automation'},
+        fix:'Add a unique descriptive title tag to each page in the Webflow CMS template.',
+        impact:'Pages without a <title> tag show a blank browser tab and provide no title for search engines to index. Both solution pages are effectively invisible to title-based queries, and any external link to these pages provides no title context to the destination.'
+      },
+      {
+        area:'Title vs H1 Mismatch',
+        finding:'Title says "Controls" but H1 says "Compliance" on data governance page',
+        paths:[{l:'/platform/data-governance-and-controls',u:BASE+'/platform/data-governance-and-controls'}],
+        source:{text:'Direct fetch — <title> vs <h1> content comparison', url:BASE+'/platform/data-governance-and-controls'},
+        fix:'Align the title tag and H1 to use the same term consistently.',
+        impact:'When the title tag and H1 use different terminology for the same page — "Controls" vs "Compliance" — search engines receive mixed keyword signals. On a page specifically about data governance, terminological inconsistency also affects how the page\'s accuracy is perceived by technical and compliance-focused buyers.'
+      },
+      {
+        area:'Title Formatting',
+        finding:'Blog title uses "Blog |" prefix and truncates "for Enterprises" from the headline',
+        paths:[{l:'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises',u:BASE+'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises'}],
+        source:{text:'<title> element inspection — truncation and prefix confirmed', url:BASE+'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises'},
+        fix:'Remove "Blog |" prefix. Use the full article headline as the complete title tag.',
+        impact:'The generic "Blog |" prefix consumes seven characters of the available SERP title space, and the article headline is truncated in search results. The title tag should match the full article headline directly, without a category prefix.'
+      },
+      {
+        area:'Duplicate Headings',
+        finding:'Duplicate H2 "Choosing the Future of Finance Operations" appears twice on comparison page',
+        paths:[{l:'/compare/blackline-alternative',u:BASE+'/compare/blackline-alternative'}],
+        source:{text:'Heading inspection — exact H2 string confirmed twice on same page', url:BASE+'/compare/blackline-alternative'},
+        fix:'Remove or rewrite the duplicate H2.',
+        impact:'Repeated H2 text on a single page signals redundant structure to crawlers. The comparison page is a high-intent destination for buyers in an active evaluation; heading structure should reinforce a clear, differentiated argument rather than repeat the same section label.'
+      },
+      {
+        area:'Title Casing',
+        finding:'Comparison page <title> is entirely lowercase with no brand suffix',
+        paths:[{l:'/compare/blackline-alternative',u:BASE+'/compare/blackline-alternative'}],
+        source:{text:'<title> element value confirmed: "bluecopa vs blackline"', url:BASE+'/compare/blackline-alternative'},
+        fix:'Match H1 casing and add "| Bluecopa" brand suffix.',
+        impact:'The title tag renders as "bluecopa vs blackline" in all lowercase with no brand suffix in SERPs. Title casing and brand suffix are standard formatting conventions; the discrepancy is particularly visible on a high-intent competitor comparison page where first impressions influence click decisions.'
+      },
+      {
+        area:'Sitemap Quality',
+        finding:'Sitemap contains 459 URLs including 12 placeholder slugs, /thankyou, and /arcade',
+        paths:[{l:'/sitemap.xml',u:BASE+'/sitemap.xml'},{l:'/thankyou',u:BASE+'/thankyou'},{l:'/arcade',u:BASE+'/arcade'}],
+        source:{text:'Direct fetch of sitemap.xml — 459 <loc> entries confirmed', url:BASE+'/sitemap.xml'},
+        fix:'Remove all placeholder, post-conversion, and internal pages from sitemap. Return 410 for abandoned pages.',
+        impact:'A sitemap signals to search engines which pages are worth crawling. Including placeholder slugs, a post-conversion page (/thankyou), and an internal tool (/arcade) directs crawl budget toward low-value URLs. Placeholder pages submitted via sitemap are eligible for indexing as long as they return HTTP 200.'
+      }
+    ]
+  },
+  {
+    id: 'accessibility', name: 'Accessibility', num: '03',
+    rows: [
+      {
+        area:'Missing Alt Text',
+        finding:'30 images on /samyxai and 18 on /platform/order-to-cash have no alt attribute at all',
+        paths:[{l:'/samyxai',u:BASE+'/samyxai'},{l:'/platform/order-to-cash',u:BASE+'/platform/order-to-cash'}],
+        source:{text:'<img> tag inspection — /samyxai (30 images), /platform/order-to-cash (18)', url:BASE+'/samyxai'},
+        fix:'Add descriptive alt text to content images. Use alt="" for purely decorative images.',
+        impact:'Images without an alt attribute cause screen readers to announce the raw file path or CDN URL in its place. 30 images on /samyxai and 18 on /platform/order-to-cash have no alt attribute. WCAG 2.1 Success Criterion 1.1.1 (Level A) requires all non-text content to have a text alternative.'
+      },
+      {
+        area:'Empty Alt on Logos',
+        finding:'All 52 integration partner logos on /integrations have empty alt=""',
+        paths:[{l:'/integrations',u:BASE+'/integrations'}],
+        source:{text:'<img> tag inspection — /integrations, all 52 logos confirmed alt=""', url:BASE+'/integrations'},
+        fix:'Add descriptive alt text to each: alt="Xero logo", alt="Salesforce logo" etc.',
+        impact:'Integration partner logos with empty alt="" are treated as decorative by assistive technology, making all partner names unavailable to screen readers. The /integrations page exists to confirm stack compatibility; users relying on assistive technology are excluded from that confirmation entirely.'
+      },
+      {
+        area:'Page Landmarks',
+        finding:'No <main> landmark element on any of 8 pages checked',
+        paths:[{l:'/',u:BASE+'/'},{l:'/demo',u:BASE+'/demo'},{l:'/samyxai',u:BASE+'/samyxai'},{l:'/integrations',u:BASE+'/integrations'}],
+        source:{text:'HTML landmark inspection — 8 pages checked, 0 <main> elements found', url:BASE+'/'},
+        fix:'Wrap main page content in <main id="main"> on every page template.',
+        impact:'Without a <main> landmark, assistive technology users cannot navigate directly to page content and must traverse the full page structure from the top on each visit. Applies to all pages checked. WCAG 2.1 SC 2.4.1 and SC 1.3.6 both apply.'
+      },
+      {
+        area:'Keyboard Navigation',
+        finding:'No skip navigation link on any page',
+        paths:[{l:'all pages',u:BASE+'/'}],
+        source:{text:'Top-of-body inspection — 8 pages, 0 skip links found', url:BASE+'/'},
+        fix:'Add <a class="skip-link" href="#main">Skip to main content</a> at the top of every page template.',
+        impact:'A skip navigation link allows keyboard users to bypass repeated navigation elements. Without one, keyboard-only users tab through all navigation links before reaching any content on every page load. This is a WCAG 2.1 SC 2.4.1 Level A requirement affecting every page on the site.'
+      },
+      {
+        area:'Motion Sensitivity',
+        finding:'prefers-reduced-motion not implemented; marquee animation runs on all pages',
+        paths:[{l:'/',u:BASE+'/'},{l:'/samyxai',u:BASE+'/samyxai'}],
+        source:{text:'Inline <style> inspection — 8 pages, 0 reduced-motion media queries found', url:BASE+'/'},
+        fix:'Add @media (prefers-reduced-motion: reduce) CSS that disables the marquee and keyframe animations.',
+        impact:'Users who have enabled the prefers-reduced-motion setting at the OS level expect sites to honour that preference. The sitewide marquee animation has no CSS override for this setting. WCAG 2.1 SC 2.3.3 and broader platform accessibility guidelines recommend respecting the user\'s motion preference.'
+      },
+      {
+        area:'Button Labels',
+        finding:'Scroll-to-top button has no aria-label and no inner text',
+        paths:[{l:'/platform/order-to-cash',u:BASE+'/platform/order-to-cash'}],
+        source:{text:'Page HTML — <button id="scroll-to-top"> confirmed with no label', url:BASE+'/platform/order-to-cash'},
+        fix:'Add aria-label="Scroll to top" to the button element.',
+        impact:'An interactive button with no accessible name — no inner text and no aria-label — is announced by screen readers without context. WCAG 2.1 SC 4.1.2 (Level A) requires all user interface components to have names that are programmatically determinable by assistive technology.'
+      }
+    ]
+  },
+  {
+    id: 'content', name: 'Content & Copy', num: '04',
+    rows: [
+      {
+        area:'Placeholder Content',
+        finding:'12 placeholder CMS pages are live, Google-indexed, and in sitemap',
+        paths:[{l:'/long-form-guide/cms-analytics-and-reporting',u:BASE+'/long-form-guide/cms-analytics-and-reporting'},{l:'/long-form-guide/cms-performance-optimization',u:BASE+'/long-form-guide/cms-performance-optimization'},{l:'/podcast-cateogry/category-1',u:BASE+'/podcast-cateogry/category-1'}],
+        source:{text:'Direct page fetch + sitemap.xml — 12 slugs confirmed live and indexed', url:BASE+'/sitemap.xml'},
+        fix:'Unpublish or return 410. Remove from sitemap. Add noindex during transition.',
+        impact:'12 CMS pages with Webflow starter content are live, return HTTP 200, and appear in sitemap.xml. These pages are eligible for Google indexing in their current state. They should be either removed from publication or assigned noindex while real content is being prepared.'
+      },
+      {
+        area:'Legal Document',
+        finding:'Live Privacy Policy contains lorem ipsum and Webflow template heading strings',
+        paths:[{l:'/privacy',u:BASE+'/privacy'}],
+        source:{text:'Direct fetch of /privacy — lorem ipsum and "Heading 1" confirmed in live page', url:BASE+'/privacy'},
+        fix:'Remove all placeholder text. Have legal review the full page before republishing.',
+        impact:'The Privacy Policy page contains Webflow template strings ("Heading 1", "Heading 2", "> Block quote") alongside lorem ipsum body text. As a legal document visible to all site visitors, enterprise procurement teams, and regulatory reviewers, it requires complete and accurate content.'
+      },
+      {
+        area:'Blog and Case Study Pages',
+        finding:'Customer case study page and 4 blog pages contain placeholder content',
+        paths:[{l:'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises',u:BASE+'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises'},{l:'/blog/why-online-travel-agrregators-otas-need-to-automate-their-plb-calculations',u:BASE+'/blog/why-online-travel-agrregators-otas-need-to-automate-their-plb-calculations'},{l:'/blog/seasonal-sales-surge-dont-let-bottomline-blindspots-blow-up-your-gains',u:BASE+'/blog/seasonal-sales-surge-dont-let-bottomline-blindspots-blow-up-your-gains'}],
+        source:{text:'Direct fetch of 5 pages — lorem ipsum, Heading 1-6, and webflow.com links confirmed', url:BASE+'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises'},
+        fix:'Replace placeholder content or set noindex on each page until real content is in place.',
+        impact:'Several blog pages and a customer case study page contain Webflow starter content including lorem ipsum body text, heading placeholders, and a link to university.webflow.com. These pages are in the sitemap, return HTTP 200, and are accessible to any site visitor or search crawler.'
+      },
+      {
+        area:'URL and Title Typos',
+        finding:'Typos in live URLs — "agrregators", "podcast-cateogry", "Automatating" in <title>',
+        paths:[{l:'/blog/why-online-travel-agrregators-otas-need-to-automate-their-plb-calculations',u:BASE+'/blog/why-online-travel-agrregators-otas-need-to-automate-their-plb-calculations'},{l:'/podcast-cateogry/category-1',u:BASE+'/podcast-cateogry/category-1'},{l:'/podcast-cateogry/category-2',u:BASE+'/podcast-cateogry/category-2'}],
+        source:{text:'URL slug inspection + <title> tag — confirmed in live paths and title elements', url:BASE+'/podcast-cateogry/category-1'},
+        fix:'Correct all slugs. Add 301 redirects from typo URLs. Fix title tags and update sitemap.',
+        impact:'Three URL-level typos are confirmed: "agrregators" in a blog slug, "podcast-cateogry" in two category URLs, and "Automatating" in a blog page title tag. URL-level typos cannot be corrected without a 301 redirect; the original URLs must remain active to preserve any existing links or indexed entries.'
+      },
+      {
+        area:'Metric Inconsistency',
+        finding:'Same customer cited with different efficiency metrics across pages — 80% on case study, 95% on two other pages',
+        paths:[{l:'/platform/order-to-cash',u:BASE+'/platform/order-to-cash'},{l:'/compare/blackline-alternative',u:BASE+'/compare/blackline-alternative'}],
+        source:{text:'Cross-page comparison — 3 pages fetched and compared', url:BASE+'/platform/order-to-cash'},
+        fix:'Confirm the correct figure. Update all relevant pages to reflect the same verified metric.',
+        impact:'The same customer is cited with two different efficiency metrics on separate pages — 80% on the case study page and 95% on a product page and a comparison page. The correct figure should be confirmed with the customer and applied consistently. Inconsistent metrics are likely to be noticed by buyers conducting reference checks or document comparison during due diligence.'
+      },
+      {
+        area:'CTA Mismatch',
+        finding:'Ebook page copy references "compliance roadmap" but asset is an HFS analyst report; two conflicting CTAs on one page',
+        paths:[{l:'/ebooks/hfs-hot-vendor-2023-report-1',u:BASE+'/ebooks/hfs-hot-vendor-2023-report-1'}],
+        source:{text:'Direct fetch of /ebooks/hfs-hot-vendor-2023-report-1', url:BASE+'/ebooks/hfs-hot-vendor-2023-report-1'},
+        fix:'Update copy to describe the actual asset. Use one CTA consistently.',
+        impact:'The form copy describes a compliance roadmap, but the downloadable asset is an analyst report. The page also displays two different CTA labels simultaneously — "Book a demo" and "Get Your Copy." Both issues reduce conversion clarity: a visitor who arrives with a specific intent may not recognise that the asset matches their need.'
+      },
+      {
+        area:'Copy Error',
+        finding:'"SamyxBuild" missing space on /samyxai — other three modules display correctly',
+        paths:[{l:'/samyxai',u:BASE+'/samyxai'}],
+        source:{text:'Direct fetch of /samyxai — exact text "SamyxBuild" confirmed', url:BASE+'/samyxai'},
+        fix:'Fix to "Samyx Build" — consistent with Samyx Recon, Samyx Extract, Samyx Narrate.',
+        impact:'The product module name appears as "SamyxBuild" without a space on /samyxai, while the three other module names render correctly. The inconsistency is visible on the primary AI product page reviewed by technical and finance evaluators.'
+      },
+      {
+        area:'Copy Error',
+        finding:'"50 % Faster revenuerecovery" — missing space between revenue and recovery',
+        paths:[{l:'/platform/order-to-cash',u:BASE+'/platform/order-to-cash'}],
+        source:{text:'Direct fetch of /platform/order-to-cash — exact text confirmed', url:BASE+'/platform/order-to-cash'},
+        fix:'Fix to "Faster revenue recovery".',
+        impact:'A key performance metric on /platform/order-to-cash reads "revenuerecovery" as a single concatenated word. The intended display is "revenue recovery" with a space. This is directly visible to finance buyers evaluating ROI metrics on this page.'
+      },
+      {
+        area:'Duplicate Entry',
+        finding:'"Google Drive" listed twice consecutively in the same connector category',
+        paths:[{l:'/integrations',u:BASE+'/integrations'}],
+        source:{text:'Direct fetch of /integrations — duplicate confirmed in Data lakes & Databases list', url:BASE+'/integrations'},
+        fix:'Remove the duplicate entry.',
+        impact:'Google Drive appears twice consecutively in the Data lakes & Databases connector list. Technical buyers verifying stack compatibility on the /integrations page are likely to notice the repetition.'
+      },
+      {
+        area:'Placeholder Content',
+        finding:'/terms-of-service page exists but contains lorem ipsum template artifacts below legal text',
+        paths:[{l:'/terms-of-service',u:BASE+'/terms-of-service'}],
+        source:{text:'Direct fetch of /terms-of-service — lorem ipsum and heading placeholders confirmed below substantive legal text', url:BASE+'/terms-of-service'},
+        fix:'Remove all placeholder sections. Ensure the full page contains only reviewed legal content before it is linked publicly.',
+        impact:'The Terms of Service page is live and contains real legal text, but Webflow template placeholder content (lorem ipsum body text and heading stubs) remains visible below it. The page is accessible to any visitor and enterprise legal reviewers who navigate to it directly.'
+      },
+      {
+        area:'Placeholder Content',
+        finding:'Additional customer case study page contains lorem ipsum body content',
+        paths:[{l:'/customers/',u:BASE+'/customers/'}],
+        source:{text:'Direct fetch — lorem ipsum and Webflow heading placeholders confirmed in live page body', url:BASE+'/customers/'},
+        fix:'Replace placeholder content or set noindex until real content is in place.',
+        impact:'A second customer case study page was found with Webflow starter content in the body, extending the previously documented placeholder content finding. The page returns HTTP 200 and is accessible to any visitor or search crawler.'
+      },
+      {
+        area:'Legacy Page',
+        finding:'Orphaned live page /old-pages/samyxai-old — duplicate of /samyxai with no canonical',
+        paths:[{l:'/old-pages/samyxai-old',u:BASE+'/old-pages/samyxai-old'}],
+        source:{text:'Direct fetch — returns HTTP 200 with real SamyxAI content', url:BASE+'/old-pages/samyxai-old'},
+        fix:'Return 410 or 301 redirect to /samyxai. Add noindex immediately.',
+        impact:'An old version of the SamyxAI page is publicly accessible, returns HTTP 200 with real content, has no canonical tag, and is not linked from any navigation. It creates a duplicate content signal and a secondary, unmonitored version of the page that may receive backlinks or direct traffic.'
+      }
+    ]
+  },
+  {
+    id: 'privacy', name: 'Privacy & Legal', num: '05',
+    rows: [
+      {
+        area:'GDPR / CCPA Gap',
+        finding:'No cookie consent platform on any page — all tracking fires without user consent',
+        paths:[{l:'/',u:BASE+'/'},{l:'/demo',u:BASE+'/demo'},{l:'/samyxai',u:BASE+'/samyxai'},{l:'/security',u:BASE+'/security'}],
+        source:{text:'HTML source inspection across 8+ pages — no CMP script found anywhere', url:BASE+'/security'},
+        fix:'Implement OneTrust, Cookiebot, or Osano. Gate GTM, LinkedIn tracking, and HubSpot behind consent categories.',
+        impact:'Google Tag Manager, LinkedIn cookie capture, and HubSpot meetings embed all execute on page load without a consent gate. A cookie consent management platform is the standard mechanism for demonstrating GDPR and CCPA compliance and must be in place before non-essential tracking is activated for visitors from regulated jurisdictions.'
+      },
+      {
+        area:'Missing Legal Page',
+        finding:'/terms returns 404 — no Terms of Service page exists anywhere on the site',
+        paths:[{l:'/terms',u:BASE+'/terms'}],
+        source:{text:'Direct fetch of /terms — HTTP 404 confirmed, no redirect', url:BASE+'/terms'},
+        fix:'Create a /terms page with real Terms of Service. Link it from the footer next to /privacy.',
+        impact:'/terms returns HTTP 404 with no redirect to an alternative URL. Enterprise procurement and legal teams routinely request a Terms of Service page before advancing an evaluation. The footer currently links to /privacy but has no equivalent for terms of use.'
+      },
+      {
+        area:'Unlawful Data Transfer',
+        finding:'LinkedIn li_fat_id cookie forwarded to HubSpot on /demo — no disclosure, no consent',
+        paths:[{l:'/demo',u:BASE+'/demo'}],
+        source:{text:'Inline JavaScript on /demo — exact forwarding code confirmed', url:BASE+'/demo'},
+        fix:'Remove the forwarding code. If attribution is needed, gate it behind explicit ad tracking consent.',
+        impact:'A LinkedIn-issued ad tracking identifier is appended to the HubSpot meeting booking URL without the user being notified. The practice is not described in the current cookie policy and is not gated behind a consent mechanism. This should be reviewed for compliance with GDPR Article 6 lawful basis requirements.'
+      },
+      {
+        area:'Stale Privacy Policy',
+        finding:'Privacy Policy last updated November 2025 — does not describe confirmed 2026 tracking practices',
+        paths:[{l:'/privacy',u:BASE+'/privacy'}],
+        source:{text:'/privacy — last updated date confirmed as November 17, 2025', url:BASE+'/privacy'},
+        fix:'Review and update Privacy Policy to list all current data processors, cookies, and tracking methods.',
+        impact:'The policy was last updated November 2025, predating several tracking practices confirmed active in 2026: LinkedIn cookie forwarding, HubSpot meetings embed across three pages, and the GTM-NN2DJLLM container. GDPR and CCPA require the privacy policy to accurately describe all ongoing data processing.'
+      }
+    ]
+  },
+  {
+    id: 'subdomains', name: 'Subdomains', num: '06',
+    rows: [
+      {
+        area:'Partner Portal',
+        finding:'experience.bluecopa.com — partner portal HTML loads all restricted content before login; potential client-side authentication bypass',
+        paths:[{l:'experience.bluecopa.com',u:'https://experience.bluecopa.com/'}],
+        source:{text:'Direct fetch confirmed — login page HTML contains hidden view IDs: #view-hub, #view-tech, #view-cs-1, #view-roadmap, #view-demo', url:'https://experience.bluecopa.com/'},
+        fix:'Move all restricted content to server-side rendering. Content must only be returned after a validated server-side session — never included in the initial HTML payload.',
+        impact:'The portal is a single-page application that loads all content views in the initial HTML response before any login occurs. View IDs found in pre-auth HTML include: product roadmap (#view-roadmap), technical architecture (#view-tech), competitive differentiation matrix, demo gallery (#view-demo), and customer case studies (#view-cs-1, #view-cs-ich). If authentication only toggles CSS visibility rather than gating a server-side data fetch, all of this partner-confidential content is accessible by opening browser developer tools and unhiding the relevant elements — no credentials required.'
+      },
+      {
+        area:'Undocumented Application',
+        finding:'schedule.bluecopa.com — confirmed self-hosted Cal.com instance; technology fingerprinted, known CVE surface, patch status unknown',
+        paths:[{l:'schedule.bluecopa.com/auth/login',u:'https://schedule.bluecopa.com/auth/login'}],
+        source:{text:'Direct fetch of login page — React chunks, Next.js static files, and {{appName}} resolving to Cal.com confirmed in page source. Build ID: 70tkjCIBAyJQjKBpOx5jC', url:'https://schedule.bluecopa.com/auth/login'},
+        fix:'Confirm the Cal.com instance is on the latest version. Enable automatic security updates. Rate-limit /auth/forgot-password. Remove build ID from public output. Register this application in the internal patch management process.',
+        impact:'The scheduling application is a self-hosted Cal.com fork, confirmed from page source. Cal.com is open-source with a public CVE history. Because the technology stack is now identified and the build ID is exposed, an attacker can attempt to fingerprint the exact version and cross-reference it against known vulnerabilities. Self-hosted instances of open-source tools are frequently behind on security patches, particularly when the application is undocumented internally. The /auth/forgot-password endpoint is publicly reachable and represents an additional attack surface for account takeover attempts.'
+      },
+      {
+        area:'Support Portal',
+        finding:'support.bluecopa.com — Zoho Desk customer support portal publicly discoverable',
+        paths:[{l:'support.bluecopa.com',u:'https://support.bluecopa.com/portal/en/signin'}],
+        source:{text:'Google search — support subdomain publicly indexed with sign-in page accessible', url:'https://support.bluecopa.com/portal/en/signin'},
+        fix:'Review what information is visible on the portal home page before login. Ensure no ticket data or customer details are accessible without authentication.',
+        impact:'The Zoho Desk support portal is publicly accessible and Google-indexed. The sign-in page is reachable without any prior authentication. While a login page being public is standard, it is worth confirming that no support ticket content, customer names, or case details are visible to unauthenticated visitors on the portal landing page.'
+      }
+    ]
+  },
+  {
+    id: 'performance', name: 'Performance', num: '07',
+    rows: [
+      {
+        area:'Render Blocking',
+        finding:'HubSpot meetings script is render-blocking on /demo — no async or defer',
+        paths:[{l:'/demo',u:BASE+'/demo'}],
+        source:{text:'<script> tag inspection on /demo — MeetingsEmbedCode.js confirmed without defer', url:BASE+'/demo'},
+        fix:'Add defer attribute to the HubSpot script tag on /demo.',
+        impact:'The HubSpot MeetingsEmbedCode.js script on /demo loads synchronously without an async or defer attribute. Synchronous scripts block HTML parsing until the external resource downloads and executes. Adding defer allows the rest of the page to render in parallel, reducing time-to-interactive on the primary conversion page.'
+      },
+      {
+        area:'Render Blocking',
+        finding:'HubSpot meetings script also render-blocking on /reconciliation and /continuous-close',
+        paths:[{l:'/reconciliation',u:BASE+'/reconciliation'},{l:'/continuous-close',u:BASE+'/continuous-close'}],
+        source:{text:'<script> tag inspection — no defer confirmed on both pages', url:BASE+'/reconciliation'},
+        fix:'Add defer to the HubSpot meetings script on both pages.',
+        impact:'The same render-blocking pattern is present on /reconciliation and /continuous-close. Both pages load the HubSpot meetings script synchronously, delaying page render until the script completes. Adding defer resolves the issue on both pages as it does on /demo.'
+      }
+    ]
+  }
+];
+
+// ── RENDER GRID ──
+const grid = document.getElementById('grid');
+cats.forEach(c => {
+  const t = document.createElement('div');
+  t.className = 'tile';
+  t.id = 'tile-' + c.id;
+  t.innerHTML =
+    `<div class="tile-num">CAT ${c.num}</div>` +
+    `<div class="tile-name">${c.name}</div>` +
+    `<div class="tile-count">${c.rows.length} findings</div>`;
+  t.addEventListener('click', () => toggle(c.id));
+  grid.appendChild(t);
+});
+
+// ── TOGGLE ──
+let active = null;
+function toggle(id) {
+  const panel = document.getElementById('panel');
+  if (active === id) {
+    active = null;
+    document.getElementById('tile-' + id).classList.remove('active');
+    panel.classList.remove('open');
+    panel.innerHTML = '';
+    return;
+  }
+  if (active) document.getElementById('tile-' + active).classList.remove('active');
+  active = id;
+  document.getElementById('tile-' + id).classList.add('active');
+  render(id);
+  panel.classList.add('open');
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+}
+
+// ── RENDER ──
+function pathLinks(paths) {
+  return paths.map(p =>
+    `<a class="path-link" href="${p.u}" target="_blank" rel="noopener">${p.l}</a>`
+  ).join('');
+}
+function srcCell(s) {
+  if (s.url) return `<a class="src-link" href="${s.url}" target="_blank" rel="noopener">${esc(s.text)}</a>`;
+  return `<span class="src-text">${esc(s.text)}</span>`;
+}
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function render(id) {
+  const cat = cats.find(c => c.id === id);
+  const panel = document.getElementById('panel');
+
+  const t1 = cat.rows.map(r => `
+    <tr>
+      <td class="fname">${esc(r.finding)}</td>
+      <td>${pathLinks(r.paths)}</td>
+      <td>${srcCell(r.source)}</td>
+      <td>${esc(r.impact)}</td>
+    </tr>`).join('');
+
+  const t2 = cat.rows.map(r => `
+    <tr>
+      <td class="fname" style="width:28%">${esc(r.finding)}<br><br>${pathLinks(r.paths)}</td>
+      <td>${esc(r.fix)}</td>
+    </tr>`).join('');
+
+  panel.innerHTML = `
+    <div class="panel-header">
+      <span class="panel-title">${esc(cat.name)} — Findings</span>
+      <span class="panel-sub">${cat.rows.length} items &nbsp;·&nbsp; publicly observable</span>
+    </div>
+    <div class="panel-body">
+      <div class="tbl-label">Table 01 &nbsp;·&nbsp; Finding Detail</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Finding</th>
+            <th style="width:200px">Paths</th>
+            <th style="width:220px">Source</th>
+            <th>Business Impact</th>
+          </tr>
+        </thead>
+        <tbody>${t1}</tbody>
+      </table>
+
+      <div class="divider"></div>
+
+      <div class="tbl-label">Table 02 &nbsp;·&nbsp; Recommended Actions</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Finding &amp; Paths</th>
+            <th>Recommended Fix</th>
+          </tr>
+        </thead>
+        <tbody>${t2}</tbody>
+      </table>
+    </div>`;
+}
+</script>
+</body>
+</html>
