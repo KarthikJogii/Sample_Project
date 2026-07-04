@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* ─── Bluecopa exact colors ─── */
+@theme {
+  --color-blue-brand: #3548FF;
+  --color-blue-dark: #1a2bcc;
+  --color-text-dark: #090909;
+  --color-gray-light: #EAEAEA;
+  --color-gray-muted: #A5A5A5;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Resets ─── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #090909;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #fff;
+}
+
+/* ─── Marquee (45s – matching Bluecopa) ─── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track { animation: marquee-scroll 45s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; }
+
+/* ─── Shimmer on badge ─── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-badge {
+  background: linear-gradient(120deg, #090909 0%, #090909 40%, #3548FF 50%, #090909 60%, #090909 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ─── Wave text (character-by-character color) ─── */
+.wave-char {
+  display: inline-block;
+  color: #EAEAEA;
+  transition: color 0.4s ease;
+}
+.wave-char.lit { color: #3548FF; }
+
+/* ─── Fade-up load animation ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  opacity: 0;
+  transform: translateY(15px);
+}
+.fade-up.visible {
+  animation: fadeUp 0.5s ease forwards;
+}
+
+/* ─── Counter number ─── */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.counter-visible { animation: countUp 0.4s ease forwards; }
+
+/* ─── Tab height expand ─── */
+.tab-height {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.tab-height.active {
+  max-height: 10rem;
+}
+
+/* ─── Announcement bar ─── */
+.announcement-bar {
+  background: #090909;
+  color: #fff;
+}
+
+/* ─── Blue patterned bg (stats section) ─── */
+.blue-section-bg {
+  background: #3548FF;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255,255,255,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255,255,255,0.04) 0%, transparent 40%);
+}
+
+/* ─── Dark SamyxAI bg ─── */
+.samyx-bg {
+  background: #090909;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(53,72,255,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(53,72,255,0.10) 0%, transparent 50%);
+}
+
+/* ─── Scroll-to-top ─── */
+.scroll-top-btn {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.scroll-top-btn.show {
+  opacity: 1;
+  pointer-events: auto;
+}
