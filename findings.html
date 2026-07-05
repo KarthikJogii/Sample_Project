@@ -103,7 +103,7 @@
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="stat-num">52</div><div class="stat-label">Total Findings</div></div>
+  <div class="stat"><div class="stat-num">46</div><div class="stat-label">Total Findings</div></div>
   <div class="stat"><div class="stat-num">7</div><div class="stat-label">Areas Reviewed</div></div>
   <div class="stat"><div class="stat-num">15</div><div class="stat-label">Security Observations</div></div>
   <div class="stat"><div class="stat-num">18</div><div class="stat-label">Pages Audited</div></div>
@@ -393,14 +393,6 @@ const cats = [
         impact:'12 CMS pages with Webflow starter content are live, return HTTP 200, and appear in sitemap.xml. These pages are eligible for Google indexing in their current state. They should be either removed from publication or assigned noindex while real content is being prepared.'
       },
       {
-        area:'Legal Document',
-        finding:'Live Privacy Policy contains lorem ipsum and Webflow template heading strings',
-        paths:[{l:'/privacy',u:BASE+'/privacy'}],
-        source:{text:'Direct fetch of /privacy — lorem ipsum and "Heading 1" confirmed in live page', url:BASE+'/privacy'},
-        fix:'Remove all placeholder text. Have legal review the full page before republishing.',
-        impact:'The Privacy Policy page contains Webflow template strings ("Heading 1", "Heading 2", "> Block quote") alongside lorem ipsum body text. As a legal document visible to all site visitors, enterprise procurement teams, and regulatory reviewers, it requires complete and accurate content.'
-      },
-      {
         area:'Blog and Case Study Pages',
         finding:'Customer case study page and 4 blog pages contain placeholder content',
         paths:[{l:'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises',u:BASE+'/blog/bluecopa-raises-7-5m-series-a-to-build-autonomous-finance-for-enterprises'},{l:'/blog/why-online-travel-agrregators-otas-need-to-automate-their-plb-calculations',u:BASE+'/blog/why-online-travel-agrregators-otas-need-to-automate-their-plb-calculations'},{l:'/blog/seasonal-sales-surge-dont-let-bottomline-blindspots-blow-up-your-gains',u:BASE+'/blog/seasonal-sales-surge-dont-let-bottomline-blindspots-blow-up-your-gains'}],
@@ -425,22 +417,6 @@ const cats = [
         impact:'The same customer is cited with two different efficiency metrics on separate pages — 80% on the case study page and 95% on a product page and a comparison page. The correct figure should be confirmed with the customer and applied consistently. Inconsistent metrics are likely to be noticed by buyers conducting reference checks or document comparison during due diligence.'
       },
       {
-        area:'CTA Mismatch',
-        finding:'Ebook page copy references "compliance roadmap" but asset is an HFS analyst report; two conflicting CTAs on one page',
-        paths:[{l:'/ebooks/hfs-hot-vendor-2023-report-1',u:BASE+'/ebooks/hfs-hot-vendor-2023-report-1'}],
-        source:{text:'Direct fetch of /ebooks/hfs-hot-vendor-2023-report-1', url:BASE+'/ebooks/hfs-hot-vendor-2023-report-1'},
-        fix:'Update copy to describe the actual asset. Use one CTA consistently.',
-        impact:'The form copy describes a compliance roadmap, but the downloadable asset is an analyst report. The page also displays two different CTA labels simultaneously — "Book a demo" and "Get Your Copy." Both issues reduce conversion clarity: a visitor who arrives with a specific intent may not recognise that the asset matches their need.'
-      },
-      {
-        area:'Copy Error',
-        finding:'"SamyxBuild" missing space on /samyxai — other three modules display correctly',
-        paths:[{l:'/samyxai',u:BASE+'/samyxai'}],
-        source:{text:'Direct fetch of /samyxai — exact text "SamyxBuild" confirmed', url:BASE+'/samyxai'},
-        fix:'Fix to "Samyx Build" — consistent with Samyx Recon, Samyx Extract, Samyx Narrate.',
-        impact:'The product module name appears as "SamyxBuild" without a space on /samyxai, while the three other module names render correctly. The inconsistency is visible on the primary AI product page reviewed by technical and finance evaluators.'
-      },
-      {
         area:'Copy Error',
         finding:'"50 % Faster revenuerecovery" — missing space between revenue and recovery',
         paths:[{l:'/platform/order-to-cash',u:BASE+'/platform/order-to-cash'}],
@@ -449,36 +425,12 @@ const cats = [
         impact:'A key performance metric on /platform/order-to-cash reads "revenuerecovery" as a single concatenated word. The intended display is "revenue recovery" with a space. This is directly visible to finance buyers evaluating ROI metrics on this page.'
       },
       {
-        area:'Duplicate Entry',
-        finding:'"Google Drive" listed twice consecutively in the same connector category',
-        paths:[{l:'/integrations',u:BASE+'/integrations'}],
-        source:{text:'Direct fetch of /integrations — duplicate confirmed in Data lakes & Databases list', url:BASE+'/integrations'},
-        fix:'Remove the duplicate entry.',
-        impact:'Google Drive appears twice consecutively in the Data lakes & Databases connector list. Technical buyers verifying stack compatibility on the /integrations page are likely to notice the repetition.'
-      },
-      {
-        area:'Placeholder Content',
-        finding:'/terms-of-service page exists but contains lorem ipsum template artifacts below legal text',
-        paths:[{l:'/terms-of-service',u:BASE+'/terms-of-service'}],
-        source:{text:'Direct fetch of /terms-of-service — lorem ipsum and heading placeholders confirmed below substantive legal text', url:BASE+'/terms-of-service'},
-        fix:'Remove all placeholder sections. Ensure the full page contains only reviewed legal content before it is linked publicly.',
-        impact:'The Terms of Service page is live and contains real legal text, but Webflow template placeholder content (lorem ipsum body text and heading stubs) remains visible below it. The page is accessible to any visitor and enterprise legal reviewers who navigate to it directly.'
-      },
-      {
-        area:'Placeholder Content',
-        finding:'Additional customer case study page contains lorem ipsum body content',
+        area:'Customer Case Study',
+        finding:'Customer case study page contains lorem ipsum and Webflow placeholder heading stubs in the body',
         paths:[{l:'/customers/',u:BASE+'/customers/'}],
-        source:{text:'Direct fetch — lorem ipsum and Webflow heading placeholders confirmed in live page body', url:BASE+'/customers/'},
-        fix:'Replace placeholder content or set noindex until real content is in place.',
-        impact:'A second customer case study page was found with Webflow starter content in the body, extending the previously documented placeholder content finding. The page returns HTTP 200 and is accessible to any visitor or search crawler.'
-      },
-      {
-        area:'Legacy Page',
-        finding:'Orphaned live page /old-pages/samyxai-old — duplicate of /samyxai with no canonical',
-        paths:[{l:'/old-pages/samyxai-old',u:BASE+'/old-pages/samyxai-old'}],
-        source:{text:'Direct fetch — returns HTTP 200 with real SamyxAI content', url:BASE+'/old-pages/samyxai-old'},
-        fix:'Return 410 or 301 redirect to /samyxai. Add noindex immediately.',
-        impact:'An old version of the SamyxAI page is publicly accessible, returns HTTP 200 with real content, has no canonical tag, and is not linked from any navigation. It creates a duplicate content signal and a secondary, unmonitored version of the page that may receive backlinks or direct traffic.'
+        source:{text:'Direct fetch of /customers/ — lorem ipsum body text and Webflow heading placeholders confirmed live', url:BASE+'/customers/'},
+        fix:'Replace all placeholder content with real case study copy. Set noindex until complete.',
+        impact:'A customer case study page returns HTTP 200 with Webflow starter content (lorem ipsum, heading stubs) in the body alongside any real content. Enterprise buyers who navigate directly to this page see placeholder copy where proof-of-outcome content should appear.'
       }
     ]
   },
@@ -494,12 +446,12 @@ const cats = [
         impact:'Google Tag Manager, LinkedIn cookie capture, and HubSpot meetings embed all execute on page load without a consent gate. A cookie consent management platform is the standard mechanism for demonstrating GDPR and CCPA compliance and must be in place before non-essential tracking is activated for visitors from regulated jurisdictions.'
       },
       {
-        area:'Missing Legal Page',
-        finding:'/terms returns 404 — no Terms of Service page exists anywhere on the site',
-        paths:[{l:'/terms',u:BASE+'/terms'}],
-        source:{text:'Direct fetch of /terms — HTTP 404 confirmed, no redirect', url:BASE+'/terms'},
-        fix:'Create a /terms page with real Terms of Service. Link it from the footer next to /privacy.',
-        impact:'/terms returns HTTP 404 with no redirect to an alternative URL. Enterprise procurement and legal teams routinely request a Terms of Service page before advancing an evaluation. The footer currently links to /privacy but has no equivalent for terms of use.'
+        area:'Missing Redirect',
+        finding:'/terms returns 404 with no redirect — /terms-of-service exists but is not linked from footer',
+        paths:[{l:'/terms',u:BASE+'/terms'},{l:'/terms-of-service',u:BASE+'/terms-of-service'}],
+        source:{text:'Direct fetch of /terms — HTTP 404 confirmed, no redirect to /terms-of-service. Footer links /privacy but has no equivalent link to /terms-of-service.', url:BASE+'/terms'},
+        fix:'Add a 301 redirect from /terms to /terms-of-service. Add /terms-of-service to the footer alongside the Privacy Policy link.',
+        impact:'/terms is the URL enterprise procurement teams typically try first. It returns HTTP 404 with no redirect to /terms-of-service, which is the correct page. Buyers who navigate to /terms see a dead end rather than the Terms of Use document.'
       },
       {
         area:'Unlawful Data Transfer',
@@ -510,12 +462,12 @@ const cats = [
         impact:'A LinkedIn-issued ad tracking identifier is appended to the HubSpot meeting booking URL without the user being notified. The practice is not described in the current cookie policy and is not gated behind a consent mechanism. This should be reviewed for compliance with GDPR Article 6 lawful basis requirements.'
       },
       {
-        area:'Stale Privacy Policy',
-        finding:'Privacy Policy last updated November 2025 — does not describe confirmed 2026 tracking practices',
-        paths:[{l:'/privacy',u:BASE+'/privacy'}],
-        source:{text:'/privacy — last updated date confirmed as November 17, 2025', url:BASE+'/privacy'},
-        fix:'Review and update Privacy Policy to list all current data processors, cookies, and tracking methods.',
-        impact:'The policy was last updated November 2025, predating several tracking practices confirmed active in 2026: LinkedIn cookie forwarding, HubSpot meetings embed across three pages, and the GTM-NN2DJLLM container. GDPR and CCPA require the privacy policy to accurately describe all ongoing data processing.'
+        area:'Undocumented Tracking',
+        finding:'Privacy Policy does not disclose LinkedIn li_fat_id forwarding or HubSpot meetings embed — both confirmed active',
+        paths:[{l:'/privacy',u:BASE+'/privacy'},{l:'/demo',u:BASE+'/demo'}],
+        source:{text:'Cross-check of /privacy content against /demo page source — li_fat_id forwarding code and HubSpot meetings embed are absent from privacy policy disclosures', url:BASE+'/privacy'},
+        fix:'Add explicit disclosure of LinkedIn ad tracking identifier usage and HubSpot meetings embed as a data processor. Update last-modified date after revision.',
+        impact:'The active LinkedIn li_fat_id cookie forwarding on /demo and HubSpot meetings embed deployed across /demo, /reconciliation, and /continuous-close are not mentioned in the Privacy Policy. Both are data processing activities that require disclosure under GDPR Article 13 and CCPA. Omitting them from the policy creates a gap between what the policy states and what the site actually does.'
       }
     ]
   },
